@@ -1,6 +1,6 @@
 namespace Chalkboard;
 
-public record Size(
+public readonly record struct Size(
     ushort Width,
     ushort Height
 );

@@ -1,6 +1,6 @@
 namespace Chalkboard;
 
-public class ConsoleRenderer
+public class ConsoleRenderer : IRenderer
 {
     private readonly SymbolArray _symbols;
 
