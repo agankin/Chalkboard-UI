@@ -2,5 +2,5 @@ namespace Chalkboard;
 
 public interface IRenderer
 {
-    void Render(SymbolRect screenRect);
+    void Render(RenderingRect rect);
 }

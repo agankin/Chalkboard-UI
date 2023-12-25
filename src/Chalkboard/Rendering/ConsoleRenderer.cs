@@ -2,17 +2,17 @@ namespace Chalkboard;
 
 public class ConsoleRenderer : IRenderer
 {
-    private readonly SymbolArray _symbols;
+    private readonly Symbol[,] _symbols;
 
     public ConsoleRenderer(ushort width, ushort height)
     {
-        _symbols = new(width, height);
+        _symbols = new Symbol[width, height];
     }
 
-    public void Render(SymbolRect screenRect)
+    public void Render(RenderingRect rect)
     {
-        var leftRange = Enumerable.Range(0, screenRect.Width).Cast<ushort>();
-        var topRange = Enumerable.Range(0, screenRect.Height).Cast<ushort>();
+        var leftRange = Enumerable.Range(0, rect.Width).Cast<ushort>();
+        var topRange = Enumerable.Range(0, rect.Height).Cast<ushort>();
 
         var renderedPoints = topRange.SelectMany(top => leftRange.Select(left => new Point(left, top)));
         
@@ -20,7 +20,7 @@ public class ConsoleRenderer : IRenderer
         {
             var (left, top) = point;
             var currentSymbol = _symbols[left, top];
-            var renderedSymbol = screenRect[left, top];
+            var renderedSymbol = rect[left, top];
 
             if (renderedSymbol != currentSymbol)
             {
