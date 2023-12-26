@@ -37,10 +37,11 @@ public abstract class Element
         set => SetRenderableProperty(ref _padding, value);
     }
 
-    internal abstract void Render(RenderingRect renderingRect);
+    internal void Render(RenderingRect rect) => RenderTo(rect);
+
+    protected abstract void RenderTo(RenderingRect rect);
 
     protected void SetRenderableProperty<TProperty>(ref Option<TProperty> prop, Option<TProperty> value)
-        where TProperty : struct, IEquatable<TProperty>
     {
         if (!prop.Equals(value))
         {

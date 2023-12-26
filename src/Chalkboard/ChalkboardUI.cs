@@ -27,9 +27,9 @@ public class ChalkboardUI
         if (_root == null)
             return;
 
-        var renderingRect = new RenderingRect(_renderingSize);
+        var rect = new RenderingRect(_renderingSize);
         
-        _root.Render(renderingRect);
-        _renderer.Render(renderingRect);
+        _root.Render(rect);
+        _renderer.Render(rect);
     }
 }
