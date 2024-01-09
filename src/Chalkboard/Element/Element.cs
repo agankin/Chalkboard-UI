@@ -15,7 +15,7 @@ public abstract class Element
 
     internal event EventHandler<RenderRequiredEventArgs>? RenderRequired;
 
-    public Element? Parent { get; }
+    public Element? Parent { get; internal set; }
 
     public ChildCollection Children { get; }
 
@@ -37,13 +37,14 @@ public abstract class Element
         set => SetRenderableProperty(ref _padding, value);
     }
 
-    internal void Render(RenderingRect rect) => RenderTo(rect);
+    public void Render(RenderingRect rect) => RenderTo(rect);
 
     protected abstract void RenderTo(RenderingRect rect);
 
-    protected void SetRenderableProperty<TProperty>(ref Option<TProperty> prop, Option<TProperty> value)
+    protected void SetRenderableProperty<TProperty>(ref TProperty prop, TProperty value)
     {
-        if (!prop.Equals(value))
+        var comparer = EqualityComparer<TProperty>.Default;
+        if (!comparer.Equals(prop, value))
         {
             prop = value;
             RaiseRenderRequired();

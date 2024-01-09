@@ -48,4 +48,16 @@ public class RenderingRect
 
         return new RenderingRect(slicedRect, _symbols);
     }
+
+    public void Fill(Point relativeStart, Size size, Symbol symbol)
+    {
+        var slicedRect = Slice(relativeStart, size);
+        foreach (ushort left in Enumerable.Range(0, size.Width))
+        {
+            foreach (ushort top in Enumerable.Range(0, size.Height))
+            {
+                slicedRect[left, top] = symbol;
+            }
+        }
+    }
 }

@@ -20,15 +20,22 @@ public class ChalkboardUI
 
         _root = root;
         _root.RenderRequired += OnRenderRequired;
+
+        Render();
     }
 
     private void OnRenderRequired(object? _, RenderRequiredEventArgs args)
     {
+        Render();
+    }
+
+    private void Render()
+    {
         if (_root == null)
-            return;
+            throw new InvalidOperationException($"{nameof(_root)} is null.");
 
         var rect = new RenderingRect(_renderingSize);
-        
+
         _root.Render(rect);
         _renderer.Render(rect);
     }

@@ -9,10 +9,15 @@ public class ConsoleRenderer : IRenderer
         _symbols = new Symbol[width, height];
     }
 
+    public ConsoleRenderer(Size renderingSize)
+        : this(renderingSize.Width, renderingSize.Height)
+    {
+    }
+
     public void Render(RenderingRect rect)
     {
-        var leftRange = Enumerable.Range(0, rect.Width).Cast<ushort>();
-        var topRange = Enumerable.Range(0, rect.Height).Cast<ushort>();
+        var leftRange = Enumerable.Range(0, rect.Width).Select(val => (ushort)val);
+        var topRange = Enumerable.Range(0, rect.Height).Select(val => (ushort)val);
 
         var renderedPoints = topRange.SelectMany(top => leftRange.Select(left => new Point(left, top)));
         

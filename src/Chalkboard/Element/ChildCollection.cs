@@ -17,15 +17,23 @@ public class ChildCollection : ObservableCollection<Element>
 
     public event EventHandler<RenderRequiredEventArgs>? ChildRenderRequired;
 
+    public void AddRange(IEnumerable<Element> children)
+    {
+        foreach (var child in children)
+            Add(child);
+    }
+
     protected override void OnCollectionChanged(NotifyCollectionChangedEventArgs args)
     {
         base.OnCollectionChanged(args);
 
         var addedElements = AsElements(args.NewItems);
         ValidateNotAttached(addedElements);
+        Attach(addedElements);
         SubscribeRenderRequiredEvent(addedElements);
 
         var removedElements = AsElements(args.OldItems);
+        Detach(removedElements);
         UnsubscribeRenderRequiredEvent(removedElements);
 
         RaiseElementsChanged(addedElements, removedElements);
@@ -35,6 +43,18 @@ public class ChildCollection : ObservableCollection<Element>
     {
         if (addedElements.Any(el => el.Parent != null))
             throw new Exception("An added element is already child of another parent.");
+    }
+
+    private void Attach(IEnumerable<Element> elements)
+    {
+        foreach (var el in elements)
+            el.Parent = _parent;
+    }
+
+    private void Detach(IEnumerable<Element> elements)
+    {
+        foreach (var el in elements)
+            el.Parent = null;
     }
 
     private void SubscribeRenderRequiredEvent(IEnumerable<Element> elements)
