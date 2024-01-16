@@ -16,8 +16,8 @@ public class Grid : Element
 
     protected override void RenderTo(RenderingRect rect)
     {
-        var totalWidth = (ushort)(Square.Length * _squares.GetLength(0));
-        var totalHeight = (ushort)(Square.Length * _squares.GetLength(1));
+        var totalWidth = (ushort)(Square.Length * _squares.GetWidth());
+        var totalHeight = (ushort)(Square.Length * _squares.GetHeight());
         rect.Fill(new(0, 0), new(totalWidth, totalHeight), new Symbol(' ', Color.White, Color.White));
 
         foreach (var squareIdx in Flatten(_squares))
@@ -37,8 +37,8 @@ public class Grid : Element
 
     private static IEnumerable<SquareIdx> Flatten(Square[,] squares)
     {
-        for (var leftIdx = 0; leftIdx < squares.GetLength(0); leftIdx++)
-            for (var topIdx = 0; topIdx < squares.GetLength(1); topIdx++)
+        for (var leftIdx = 0; leftIdx < squares.GetWidth(); leftIdx++)
+            for (var topIdx = 0; topIdx < squares.GetHeight(); topIdx++)
             {
                 var square = squares[leftIdx, topIdx];
                 yield return new SquareIdx(square, leftIdx, topIdx);

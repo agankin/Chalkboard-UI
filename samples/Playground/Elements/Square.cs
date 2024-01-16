@@ -20,14 +20,14 @@ public class Square : Element
 
     protected override void RenderTo(RenderingRect rect)
     {
-        var emptySymbol = new Symbol(' ', Color.White, Background.ValueOr(Color.White));
+        ColorSchemeContext.CreateFor(scheme => scheme with { Background = Background.ValueOr(Color.White) })
+            .DoInContext(() => RenderCore(rect));
+    }
 
+    private void RenderCore(RenderingRect rect)
+    {
         foreach (ushort left in Enumerable.Range(0, Length))
-        {
             foreach (ushort top in Enumerable.Range(0, Length))
-            {
-                rect[left, top] = emptySymbol;
-            }
-        }
+                rect[left, top] = ' ';
     }
 }

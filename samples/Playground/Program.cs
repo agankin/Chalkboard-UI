@@ -7,9 +7,12 @@ var ui = new ChalkboardUI(console, renderingSize);
 
 var squares = new Square[,]
 {
-    { new(), new(), new() },
-    { new(), new(), new() },
-    { new(), new(), new() }
+    { new(), new(), new(), new() },
+    { new(), new(), new(), new() },
+    { new(), new(), new(), new() },
+    { new(), new(), new(), new() },
+    { new(), new(), new(), new() },
+    { new(), new(), new(), new() }
 };
 
 var root = new Grid(squares);
@@ -18,14 +21,14 @@ ui.Render(root);
 Console.CursorVisible = false;
 
 var rand = new Random();
-var colors = Enum.GetValues(typeof(Color)).Cast<Color>().ToArray();
+var colors = Enum.GetValues(typeof(Color)).Cast<Color>().Except(new[] { Color.Black }).ToArray();
 
 for (var i = 0; i < 600; i++)
 {
-    Thread.Sleep(1000);
+    Thread.Sleep(100);
 
-    var leftIdx = rand.Next(squares.GetLength(0));
-    var topIdx = rand.Next(squares.GetLength(1));
+    var leftIdx = rand.Next(squares.GetWidth());
+    var topIdx = rand.Next(squares.GetHeight());
     var colorIdx = rand.Next(colors.Length);
     
     var color = colors[colorIdx];

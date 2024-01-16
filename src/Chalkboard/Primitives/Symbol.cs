@@ -6,9 +6,9 @@ public readonly record struct Symbol(
     Color Background
 )
 {
-    private const Color DefaultForeground = Color.White;
-    private const Color DefaultBackground = Color.Black;
-
-    public static implicit operator Symbol(char symbol) =>
-        new(symbol, Foreground: DefaultForeground, Background: DefaultBackground);
+    public static implicit operator Symbol(char symbol)
+    {
+        var (foreground, background) = ColorSchemeContext.CurrentScheme;
+        return new(symbol, foreground, background);
+    }
 }
