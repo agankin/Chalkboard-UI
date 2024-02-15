@@ -37,9 +37,7 @@ public abstract class Element
         set => SetRenderableProperty(ref _padding, value);
     }
 
-    public void Render(RenderingRect rect) => RenderTo(rect);
-
-    protected abstract void RenderTo(RenderingRect rect);
+    public abstract RenderedRect Render();
 
     protected void SetRenderableProperty<TProperty>(ref TProperty prop, TProperty value)
     {

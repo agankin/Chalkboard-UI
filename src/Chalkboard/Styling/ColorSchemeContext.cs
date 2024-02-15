@@ -11,12 +11,12 @@ public class ColorSchemeContext
     public static ColorSchemeContext CreateFor(Func<ColorScheme, ColorScheme> configureScheme) =>
         new(configureScheme(ColorScheme.Default));
 
-    public void DoInContext(Action action)
+    public TResult DoInContext<TResult>(Func<TResult> func)
     {
         try
         {
             CurrentScheme = _colorScheme;
-            action();
+            return func();
         }
         finally
         {

@@ -14,11 +14,11 @@ public class Grid : Element
         Children.AddRange(flattenSquares);
     }
 
-    protected override void RenderTo(RenderingRect rect)
+    public override RenderedRect Render()
     {
         var totalWidth = (ushort)(Square.Length * _squares.GetWidth());
         var totalHeight = (ushort)(Square.Length * _squares.GetHeight());
-        rect.Fill(new(0, 0), new(totalWidth, totalHeight), new Symbol(' ', Color.White, Color.White));
+        var renderedRect = RenderedRect.CreateFilled(totalWidth, totalHeight, ' ');
 
         foreach (var squareIdx in Flatten(_squares))
         {
@@ -26,13 +26,12 @@ public class Grid : Element
 
             var left = (ushort)(Square.Length * leftIdx);
             var top = (ushort)(Square.Length * topIdx);
-
-            var start = new Point(left, top);
-            var size = new Size(Square.Length, Square.Length);
             
-            var squareRect = rect.Slice(start, size);
-            square.Render(squareRect);
+            var squareRenderedRect = square.Render();
+            renderedRect = renderedRect.ApplyRendered(left, top, squareRenderedRect);
         }
+
+        return renderedRect;
     }
 
     private static IEnumerable<SquareIdx> Flatten(Square[,] squares)

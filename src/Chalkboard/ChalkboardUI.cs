@@ -34,9 +34,7 @@ public class ChalkboardUI
         if (_root == null)
             throw new InvalidOperationException($"{nameof(_root)} is null.");
 
-        var rect = new RenderingRect(_renderingSize);
-
-        _root.Render(rect);
-        _renderer.Render(rect);
+        var renderedRect = _root.Render();
+        _renderer.Render(renderedRect);
     }
 }

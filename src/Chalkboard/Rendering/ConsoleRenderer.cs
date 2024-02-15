@@ -2,40 +2,41 @@ namespace Chalkboard;
 
 public class ConsoleRenderer : IRenderer
 {
-    private readonly Symbol[,] _symbols;
+    private readonly ushort _width;
+    private readonly ushort _height;
+    private readonly RenderedRect _lastRootRect;
 
     public ConsoleRenderer(ushort width, ushort height)
     {
-        _symbols = new Symbol[width, height];
+        _width = width;
+        _height = height;
+
+        _lastRootRect = RenderedRect.CreateFilled(width, height, ' ');
     }
 
-    public ConsoleRenderer(Size renderingSize)
-        : this(renderingSize.Width, renderingSize.Height)
+    public ConsoleRenderer(Size renderingSize) : this(renderingSize.Width, renderingSize.Height)
     {
     }
 
-    public void Render(RenderingRect rect)
+    public void Render(RenderedRect rect)
     {
-        var leftRange = Enumerable.Range(0, rect.Width).Select(val => (ushort)val);
-        var topRange = Enumerable.Range(0, rect.Height).Select(val => (ushort)val);
-
-        var renderedPoints = topRange.SelectMany(top => leftRange.Select(left => new Point(left, top)));
+        var newRootRect = RenderedRect.CreateFilled(_width, _height, ' ')
+            .ApplyRendered(0, 0, rect);
         
-        foreach (var point in renderedPoints)
+        foreach (var positionedSymbol in newRootRect)
         {
-            var (left, top) = point;
-            var currentSymbol = _symbols[left, top];
-            var renderedSymbol = rect[left, top];
+            var (point, renderedSymbol) = positionedSymbol;
+            var currentSymbol = _lastRootRect[point].ValueOr(' ');
 
-            if (renderedSymbol != currentSymbol)
+            if (!renderedSymbol.Equals(currentSymbol))
             {
-                _symbols[left, top] = renderedSymbol;
-                Render(renderedSymbol, left, top);
+                var (left, top) = point;
+                Render(left, top, renderedSymbol);
             }
         }
     }
 
-    private static void Render(Symbol symbol, ushort left, ushort top)
+    private static void Render(ushort left, ushort top, Symbol symbol)
     {
         Console.SetCursorPosition(left, top);
         

@@ -18,16 +18,30 @@ public class Square : Element
         set => SetRenderableProperty(ref _background, value);
     }
 
-    protected override void RenderTo(RenderingRect rect)
+    public override RenderedRect Render()
     {
-        ColorSchemeContext.CreateFor(scheme => scheme with { Background = Background.ValueOr(Color.White) })
-            .DoInContext(() => RenderCore(rect));
+        var colorScheme = ColorScheme.Default with { Background = Background.ValueOr(Color.White) };
+        var colorSchemeContext = ColorSchemeContext.CreateFor(_ => colorScheme);
+        
+        var renderedRect = colorSchemeContext.DoInContext(RenderCore);
+        return renderedRect;
     }
 
-    private void RenderCore(RenderingRect rect)
+    private RenderedRect RenderCore()
     {
+        var positionedSymbols = new List<PositionedSymbol>();
+
         foreach (ushort left in Enumerable.Range(0, Length))
+        {
             foreach (ushort top in Enumerable.Range(0, Length))
-                rect[left, top] = ' ';
+            {
+                var position = new Point(left, top);
+                var positionedSymbol = new PositionedSymbol(position, ' ');
+
+                positionedSymbols.Add(positionedSymbol);
+            }
+        }
+
+        return new RenderedRect(Length, Length, positionedSymbols);
     }
 }
