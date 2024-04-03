@@ -8,7 +8,7 @@ public readonly record struct Symbol(
 {
     public static implicit operator Symbol(char symbol)
     {
-        var (foreground, background) = ColorSchemeContext.CurrentScheme;
+        var (foreground, background) = ColorScheme.Current;
         return new(symbol, foreground, background);
     }
 }

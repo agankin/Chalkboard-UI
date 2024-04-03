@@ -20,9 +20,8 @@ public class Square : Element<SquareStore>
     {
         var viewModel = Store[Left, Top];
         var colorScheme = ColorScheme.Default with { Background = viewModel.Background };
-        var colorSchemeContext = ColorSchemeContext.CreateFor(_ => colorScheme);
         
-        var renderedRect = colorSchemeContext.DoInContext(RenderCore);
+        var renderedRect = colorScheme.DoInScope(RenderCore);
         return renderedRect;
     }
 
