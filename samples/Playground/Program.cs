@@ -1,22 +1,11 @@
 ﻿using Chalkboard;
-using Playgrournd;
+using Playground;
 
-var renderingSize = new Size(80, 80);
-var console = new ConsoleRenderer(renderingSize);
-var ui = new ChalkboardUI(console, renderingSize);
+var renderer = new ConsoleRenderer(new Size(80, 80));
+var storeValue = new SquareStore(rows: 4, cols: 6);
 
-var squares = new Square[,]
-{
-    { new(), new(), new(), new() },
-    { new(), new(), new(), new() },
-    { new(), new(), new(), new() },
-    { new(), new(), new(), new() },
-    { new(), new(), new(), new() },
-    { new(), new(), new(), new() }
-};
-
-var root = new Grid(squares);
-ui.Render(root);
+var ui = new ChalkboardUI<SquareStore>(store => new Grid(store), renderer, storeValue);
+ui.Render();
 
 Console.CursorVisible = false;
 
@@ -27,13 +16,14 @@ for (var i = 0; i < 600; i++)
 {
     Thread.Sleep(100);
 
-    var leftIdx = rand.Next(squares.GetWidth());
-    var topIdx = rand.Next(squares.GetHeight());
+    var store = ui.Store;
+
+    var left = rand.Next(store.Value.Cols);
+    var top = rand.Next(store.Value.Rows);
     var colorIdx = rand.Next(colors.Length);
     
     var color = colors[colorIdx];
-    var square = squares[leftIdx, topIdx];
-    square.Background = color;
+    store.Update(value => value.SetBackground(left, top, color));
 }
 
 Console.ReadKey(true);

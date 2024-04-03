@@ -1,31 +1,24 @@
 using Chalkboard;
 
-namespace Playgrournd;
+namespace Playground;
 
-public class Grid : Element
+public class Grid : Element<SquareStore>
 {
-    private readonly Square[,] _squares;
-
-    public Grid(Square[,] squares)
+    public Grid(Store<SquareStore> store) : base(store)
     {
-        _squares = squares;
-
-        var flattenSquares = Flatten(squares).Select(sqIdx => sqIdx.Square);
-        Children.AddRange(flattenSquares);
+        Children.AddRange(CreateSquares(store));
     }
 
     public override RenderedRect Render()
     {
-        var totalWidth = (ushort)(Square.Length * _squares.GetWidth());
-        var totalHeight = (ushort)(Square.Length * _squares.GetHeight());
+        var totalWidth = (ushort)(Square.Length * Store.Cols);
+        var totalHeight = (ushort)(Square.Length * Store.Rows);
         var renderedRect = RenderedRect.CreateFilled(totalWidth, totalHeight, ' ');
 
-        foreach (var squareIdx in Flatten(_squares))
+        foreach (Square square in Children)
         {
-            var (square, leftIdx, topIdx) = squareIdx;
-
-            var left = (ushort)(Square.Length * leftIdx);
-            var top = (ushort)(Square.Length * topIdx);
+            var left = (ushort)(Square.Length * square.Left);
+            var top = (ushort)(Square.Length * square.Top);
             
             var squareRenderedRect = square.Render();
             renderedRect = renderedRect.ApplyRendered(left, top, squareRenderedRect);
@@ -34,19 +27,11 @@ public class Grid : Element
         return renderedRect;
     }
 
-    private static IEnumerable<SquareIdx> Flatten(Square[,] squares)
+    private static IEnumerable<Square> CreateSquares(Store<SquareStore> store)
     {
-        for (var leftIdx = 0; leftIdx < squares.GetWidth(); leftIdx++)
-            for (var topIdx = 0; topIdx < squares.GetHeight(); topIdx++)
-            {
-                var square = squares[leftIdx, topIdx];
-                yield return new SquareIdx(square, leftIdx, topIdx);
-            }
+        var storeValue = store.Value;
+        for (var left = 0; left < storeValue.Cols; left++)
+            for (var top = 0; top < store.Value.Rows; top++)
+                yield return new Square(store, left, top);
     }
-
-    private readonly record struct SquareIdx(
-        Square Square,
-        int LeftIdx,
-        int TopIdx
-    );
 }

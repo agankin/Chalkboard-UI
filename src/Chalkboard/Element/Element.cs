@@ -1,57 +1,32 @@
 namespace Chalkboard;
 
-public abstract class Element
+public abstract class Element<TStore>
 {
-    private Option<Size> _size = Option.None<Size>();
-    private Option<Margin> _margin = Option.None<Margin>();
-    private Option<Padding> _padding = Option.None<Padding>();
+    private readonly Store<TStore> _store;
 
-    protected Element()
-    {        
-        Children = new ChildCollection(this);
-        Children.ElementsChanged += (_, _) => RaiseRenderRequired();
-        Children.ChildRenderRequired += (_, childArgs) => RenderRequired?.Invoke(this, childArgs);
-    }
-
-    internal event EventHandler<RenderRequiredEventArgs>? RenderRequired;
-
-    public Element? Parent { get; internal set; }
-
-    public ChildCollection Children { get; }
-
-    public Option<Size> Size
+    protected Element(Store<TStore> store)
     {
-        get => _size;
-        set => SetRenderableProperty(ref _size, value);
+        _store = store;
+        Children = new ChildCollection<TStore>(this);
     }
+
+    protected TStore Store => _store.Value;
+
+    public Element<TStore>? Parent { get; internal set; }
+
+    public ChildCollection<TStore> Children { get; }
+
+    public Option<Size> Size { get; }
     
-    public Option<Margin> Margin
-    {
-        get => _margin;
-        set => SetRenderableProperty(ref _margin, value);
-    }
-
-    public Option<Padding> Padding
-    {
-        get => _padding;
-        set => SetRenderableProperty(ref _padding, value);
-    }
+    public Option<Margin> Margin { get; set; }
 
     public abstract RenderedRect Render();
 
-    protected void SetRenderableProperty<TProperty>(ref TProperty prop, TProperty value)
-    {
-        var comparer = EqualityComparer<TProperty>.Default;
-        if (!comparer.Equals(prop, value))
-        {
-            prop = value;
-            RaiseRenderRequired();
-        }
-    }
+    protected virtual void OnStoreUpdated() {}
 
-    private void RaiseRenderRequired()
+    internal void StoreUpdated()
     {
-        var eventArgs = new RenderRequiredEventArgs(this);
-        RenderRequired?.Invoke(this, eventArgs);
+        OnStoreUpdated();
+        Children.NotifyStoreUpdated();
     }
 }

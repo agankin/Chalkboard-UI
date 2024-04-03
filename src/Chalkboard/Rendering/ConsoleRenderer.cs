@@ -4,7 +4,8 @@ public class ConsoleRenderer : IRenderer
 {
     private readonly ushort _width;
     private readonly ushort _height;
-    private readonly RenderedRect _lastRootRect;
+    
+    private RenderedRect _lastRootRect;
 
     public ConsoleRenderer(ushort width, ushort height)
     {
@@ -34,6 +35,8 @@ public class ConsoleRenderer : IRenderer
                 Render(left, top, renderedSymbol);
             }
         }
+
+        _lastRootRect = newRootRect;
     }
 
     private static void Render(ushort left, ushort top, Symbol symbol)

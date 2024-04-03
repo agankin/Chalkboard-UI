@@ -1,26 +1,25 @@
 using Chalkboard;
 
-namespace Playgrournd;
+namespace Playground;
 
-public class Square : Element
+public class Square : Element<SquareStore>
 {   
     public const int Length = 6;
-    
-    private Option<Color> _background;
 
-    public Square()
+    public Square(Store<SquareStore> store, int left, int top) : base(store)
     {
+        Left = left;
+        Top = top;
     }
 
-    public Option<Color> Background
-    {
-        get => _background;
-        set => SetRenderableProperty(ref _background, value);
-    }
+    public int Left { get; }
+
+    public int Top { get; }
 
     public override RenderedRect Render()
     {
-        var colorScheme = ColorScheme.Default with { Background = Background.ValueOr(Color.White) };
+        var viewModel = Store[Left, Top];
+        var colorScheme = ColorScheme.Default with { Background = viewModel.Background };
         var colorSchemeContext = ColorSchemeContext.CreateFor(_ => colorScheme);
         
         var renderedRect = colorSchemeContext.DoInContext(RenderCore);

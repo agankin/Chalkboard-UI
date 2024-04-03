@@ -1,40 +1,25 @@
 using Chalkboard;
 
-public class ChalkboardUI
+public class ChalkboardUI<TStore>
 {
     private readonly IRenderer _renderer;
-    private readonly Size _renderingSize;
+    private readonly Element<TStore> _root;
 
-    private Element? _root;
-
-    public ChalkboardUI(IRenderer renderer, Size renderingSize)
+    public ChalkboardUI(Func<Store<TStore>, Element<TStore>> createRoot, IRenderer renderer, TStore initialStoreValue)
     {
+        Store = new Store<TStore>(this, initialStoreValue);
+
+        _root = createRoot(Store);
         _renderer = renderer;
-        _renderingSize = renderingSize;
     }
 
-    public void Render(Element root)
+    public Store<TStore> Store { get; }
+    
+    public void Render()
     {
-        if (_root != null)
-            _root.RenderRequired -= OnRenderRequired;
-
-        _root = root;
-        _root.RenderRequired += OnRenderRequired;
-
-        Render();
-    }
-
-    private void OnRenderRequired(object? _, RenderRequiredEventArgs args)
-    {
-        Render();
-    }
-
-    private void Render()
-    {
-        if (_root == null)
-            throw new InvalidOperationException($"{nameof(_root)} is null.");
-
         var renderedRect = _root.Render();
         _renderer.Render(renderedRect);
     }
+
+    internal void NotifyStoreUpdated() => _root.StoreUpdated();
 }
