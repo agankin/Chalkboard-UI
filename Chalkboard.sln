@@ -1,0 +1,27 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chalkboard", "src\Chalkboard\Chalkboard.csproj", "{8629F453-0A73-4091-95B8-AEC107A3A510}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{EAB45092-3E82-4C8D-B5D2-190DF4A9BC35}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8629F453-0A73-4091-95B8-AEC107A3A510}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8629F453-0A73-4091-95B8-AEC107A3A510}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8629F453-0A73-4091-95B8-AEC107A3A510}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8629F453-0A73-4091-95B8-AEC107A3A510}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{8629F453-0A73-4091-95B8-AEC107A3A510} = {EAB45092-3E82-4C8D-B5D2-190DF4A9BC35}
+	EndGlobalSection
+EndGlobal
