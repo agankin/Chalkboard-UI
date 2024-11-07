@@ -1,3 +1,3 @@
 # Chalkboard UI
 
-Library for building user interfaces for console applications.
+A library for building UI for console applications.
