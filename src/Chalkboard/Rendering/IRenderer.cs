@@ -4,7 +4,7 @@ public interface IRenderer
 {
     public event Action SizeChanged;
 
-    Size GetRenderingSize();
-    
+    Size Size { get; }
+
     void Render(RenderedRect rect);
 }

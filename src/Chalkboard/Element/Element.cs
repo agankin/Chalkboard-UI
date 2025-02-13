@@ -30,21 +30,19 @@ public abstract class Element<TStore> : IStoreUpdatable<TStore>
 
     private void UpdateStoreUpdatables()
     {
-        var storeUpdatables = SelectStoreUpdatables();
+        var storeUpdatables = GetStoreUpdatables();
         
         foreach (var storeUpdatable in storeUpdatables)
             storeUpdatable.UpdateStore(Store);
     }
     
-    private IEnumerable<IStoreUpdatable<TStore>> SelectStoreUpdatables()
+    private IEnumerable<IStoreUpdatable<TStore>> GetStoreUpdatables()
     {
         var storeUpdatableProperties = GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public)
             .Where(IsStoreUpdatable);
             
-        return storeUpdatableProperties.Where(property => property.GetMethod is not null)
-            .Select(property => property.GetMethod?.Invoke(this, Array.Empty<object>()))
-            .Where(value => value is not null)
-            .Cast<IStoreUpdatable<TStore>>();
+        return storeUpdatableProperties.Select(GetStoreUpdatable)
+            .Where(value => value is not null);
     }
 
     private bool IsStoreUpdatable(PropertyInfo property)
@@ -60,4 +58,7 @@ public abstract class Element<TStore> : IStoreUpdatable<TStore>
 
         return false;
     }
+
+    private IStoreUpdatable<TStore> GetStoreUpdatable(PropertyInfo property) =>
+        (IStoreUpdatable<TStore>)property.GetMethod?.Invoke(this, Array.Empty<object>())!;
 }

@@ -18,12 +18,12 @@ public class ChalkboardUI<TStore> : IDisposable
         Render();
     }
 
-    public Action<TArg> CreateStoreReducer<TArg>(StoreReducer<TStore, TArg> reducer) => _store.CreateReducer(reducer);
+    public Action<TArg> AddStoreReducer<TArg>(StoreReducer<TStore, TArg> reducer) => _store.CreateReducer(reducer);
 
     public void Render()
     {
         _root.UpdateStore(_store.Value);
-        var renderedRect = _root.Render(_renderer.GetRenderingSize());
+        var renderedRect = _root.Render(_renderer.Size);
 
         _renderer.Render(renderedRect);
     }

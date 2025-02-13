@@ -2,24 +2,26 @@ namespace Chalkboard;
 
 public class WindowsConsoleRenderer : IRenderer
 {
-    private readonly WindowsConsoleSizeObserver _consoleSizeObserver;    
     private int _width;
     private int _height;
     private RenderedRect? _renderedRect;
 
     public WindowsConsoleRenderer(int width, int height)
-    {
-        _consoleSizeObserver = new WindowsConsoleSizeObserver();
-        
-        _width = width;
-        _height = height;
+    {        
+        (_width, _height) = (width, height);
 
         WindowsConsoleConfigurer.Run();
     }
 
     public event Action? SizeChanged;
 
-    public Size GetRenderingSize() => new(_width, _height);
+    public Size Size => new(_width, _height);
+
+    public void Resize(int width, int height)
+    {
+        (_width, _height) = (width, height);
+        SizeChanged?.Invoke();
+    }
 
     public void Render(RenderedRect rect)
     {
