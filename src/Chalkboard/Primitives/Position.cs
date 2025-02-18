@@ -10,15 +10,4 @@ public readonly record struct Position(
         Left = Left + leftOffset,
         Top = Top + topOffset
     };
-
-    public Position Translate(Margin margin)
-    {
-        var (leftOffset, topOffset) = margin;
-
-        return this with
-        {
-            Left = Left + leftOffset,
-            Top = Top + topOffset
-        };
-    }
 }
