@@ -5,6 +5,8 @@ public abstract class LayoutElement<TStore> : Element<TStore>
     protected LayoutElement()
     {
         Children = new(this);
+
+        AutoUpdateStoreUpdatable(() => Children);
     }
 
     public ChildCollection<TStore> Children { get; protected set; }

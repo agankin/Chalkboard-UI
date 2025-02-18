@@ -60,6 +60,8 @@ public class ChildCollection<TStore> : ObservableCollection<Element<TStore>>, IS
             element.Parent = null;
     }
 
-    private static IEnumerable<Element<TStore>> AsElements(IList? elements) =>
-        elements?.Cast<Element<TStore>>() ?? Enumerable.Empty<Element<TStore>>();
+    private static IEnumerable<Element<TStore>> AsElements(IList? elements)
+    {
+        return elements?.Cast<Element<TStore>>() ?? [];
+    }
 }

@@ -1,9 +1,12 @@
+using System.Linq.Expressions;
 using System.Reflection;
 
 namespace Chalkboard;
 
 public abstract class Element<TStore> : IStoreUpdatable<TStore>
 {
+    private readonly List<Func<IStoreUpdatable<TStore>>> _getStoreUpdatableList = new();
+    
     protected Element()
     {
     }
@@ -19,7 +22,7 @@ public abstract class Element<TStore> : IStoreUpdatable<TStore>
         Store = store;
 
         OnStoreUpdated();
-        UpdateStoreUpdatables();
+        _getStoreUpdatableList.ForEach(getter => getter()?.UpdateStore(Store));
     }
 
     public abstract RenderedRect Render(Size size);
@@ -28,37 +31,8 @@ public abstract class Element<TStore> : IStoreUpdatable<TStore>
     {
     }
 
-    private void UpdateStoreUpdatables()
+    protected void AutoUpdateStoreUpdatable(Func<IStoreUpdatable<TStore>> getStoreUpdatable)
     {
-        var storeUpdatables = GetStoreUpdatables();
-        
-        foreach (var storeUpdatable in storeUpdatables)
-            storeUpdatable.UpdateStore(Store);
+        _getStoreUpdatableList.Add(getStoreUpdatable);
     }
-    
-    private IEnumerable<IStoreUpdatable<TStore>> GetStoreUpdatables()
-    {
-        var storeUpdatableProperties = GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public)
-            .Where(IsStoreUpdatable);
-            
-        return storeUpdatableProperties.Select(GetStoreUpdatable)
-            .Where(value => value is not null);
-    }
-
-    private bool IsStoreUpdatable(PropertyInfo property)
-    {
-        foreach (var @interface in property.PropertyType.GetInterfaces())
-        {
-            if (!@interface.IsGenericType)
-                continue;
-
-            if (@interface.GetGenericTypeDefinition() == typeof(IStoreUpdatable<>))
-                return true;
-        }
-
-        return false;
-    }
-
-    private IStoreUpdatable<TStore> GetStoreUpdatable(PropertyInfo property) =>
-        (IStoreUpdatable<TStore>)property.GetMethod?.Invoke(this, Array.Empty<object>())!;
 }
