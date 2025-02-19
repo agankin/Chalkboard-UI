@@ -1,8 +1,10 @@
-using Chalkboard;
+namespace Chalkboard.Samples;
 
-namespace Playground;
-
-public class AppStore
+public record AppStore
 {
-    public Color Color { get; set; }
+    public required Size FieldSize { get; init; }
+
+    public required SnakeModel Snake { get; init; }
+
+    public required SnakeDirection Direction { get; init; }
 }

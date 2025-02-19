@@ -34,7 +34,7 @@ public class RenderedRect : IEnumerable<PositionedSymbol>
             var position = new Position(left, top).Translate(_margin);
             var rect = new Rect(_margin.Left, _margin.Top, Width, Height);
             
-            if (!rect.Contains(position.Left, position.Top))
+            if (!rect.Contains(position))
                 return;
 
             _symbolByPosition[position] = value;

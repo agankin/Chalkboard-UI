@@ -1,6 +1,4 @@
-using Chalkboard;
-
-namespace Playground;
+namespace Chalkboard.Samples;
 
 public class Border : ContentElement<AppStore>
 {

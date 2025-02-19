@@ -9,9 +9,7 @@ public abstract class LayoutElement<TStore> : Element<TStore>
         AutoUpdateStoreUpdatable(() => Children);
     }
 
-    public ChildCollection<TStore> Children { get; protected set; }
-
-    protected abstract IEnumerable<Element<TStore>> GetChildren();
+    public ChildCollection<TStore> Children { get; }
 
     protected override void OnStoreUpdated()
     {
@@ -21,4 +19,6 @@ public abstract class LayoutElement<TStore> : Element<TStore>
         var children = GetChildren();
         Children.AddRange(children);
     }
+
+    protected abstract IEnumerable<Element<TStore>> GetChildren();
 }
