@@ -13,14 +13,20 @@ public class Snake : Element<AppStore>
     private static RenderedRect AddPosition(RenderedRect rect, IndexedPosition indexedPosition)
     {
         var (index, position) = indexedPosition;
-        var symbol = index switch
+
+        var ch = index switch
         {
-            0 => 'H',
-            int idx when idx % 2 == 0 => 'Y',
-            _ => 'X'
+            0 => ':',
+            _ => ' '
+        };
+        
+        Color color = index switch
+        {
+            0 => Color.DarkGray,
+            _ => Color.Green
         };
 
-        return rect.Apply(new PositionedSymbol(position, symbol));
+        return rect.Apply(new PositionedSymbol(position, new(ch, Color.Green, color)));
     }
 
     private record IndexedPosition(int Index, Position Position)

@@ -17,7 +17,7 @@ public record Rect(
 
     public bool Contains(int left, int top)
     {
-        return left >= Left && left <= Left + Width
-            && top >= Top && top <= Top + Height;
+        return left >= Left && left < Left + Width
+            && top >= Top && top < Top + Height;
     }
 }

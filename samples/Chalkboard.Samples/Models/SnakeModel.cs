@@ -7,11 +7,14 @@ public record SnakeModel(ImmutableList<Position> body) : IEnumerable<Position>
 {
     private readonly ImmutableList<Position> _body = body;
     
-    public SnakeModel(params Position[] body) : this(ToImmutableList(body))
+    public SnakeModel(Position head, Transformer<Position> nextSegment, int length)
+        : this(Generate(head, nextSegment, length))
     {
     }
 
     public Position Head => _body[0];
+
+    public IEnumerable<Position> Tail => _body.Skip(1);
 
     public SnakeModel Move(Func<Position, Position> moveHead)
     {
@@ -21,16 +24,18 @@ public record SnakeModel(ImmutableList<Position> body) : IEnumerable<Position>
         return new(newBody);
     }
 
-    private static ImmutableList<Position> ToImmutableList(IReadOnlyList<Position> body)
+    private static ImmutableList<Position> Generate(Position head, Transformer<Position> getNext, int length)
     {
-        if (body == null)
-            throw new ArgumentNullException(nameof(body));
+        if (length <= 0)
+            throw new ArgumentException("Snake must have length.", nameof(length));
 
-        if (body.Count == 0)
-            throw new ArgumentException("Snake must have body.", nameof(body));
-
-        return ImmutableList<Position>.Empty.AddRange(body);
+        return Enumerable.Range(0, length)
+            .Aggregate(
+                ImmutableList<Position>.Empty.Add(head),
+                (list, _) => list.Add(getNext(GetLast(list))));
     }
+
+    private static Position GetLast(ImmutableList<Position> list) => list[list.Count - 1];
 
     public IEnumerator<Position> GetEnumerator() => _body.GetEnumerator();
 
