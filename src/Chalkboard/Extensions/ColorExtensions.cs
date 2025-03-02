@@ -1,6 +1,6 @@
 namespace Chalkboard;
 
-public static class ConsoleColorMapper
+public static class ColorExtensions
 {
     public static ConsoleColor ToConsoleColor(this Color color) => color switch
     {

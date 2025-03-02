@@ -24,9 +24,21 @@ var messageReducer = ui.AddStoreReducer<AppMessage>(AppStoreReducers.OnMessage);
 Console.CursorVisible = false;
 ui.Render();
 
-var messageLoop = new AppMessageLoop();
+var messageLoop = new MessageLoop<AppMessage>(IsEscapeKeyMessage);
 
-using var appTimer = AppTimer.Start(messageLoop.Add, 100);
-using var keyboardListener = KeyboardListener.Start(messageLoop.Add);
+using var timerObservable = TimerObservable.Start(100);
+var timerObserver = new DispatchObserver<Nothing>()
+    .OnNext(_ => messageLoop.Add(new TickMessage()));
+using var timerSubscription = timerObservable.Subscribe(timerObserver);
+
+using var keyPressedObservable = KeyPressedObservable.Start();
+var keyPressedObserver = new DispatchObserver<ConsoleKeyInfo>()
+    .OnNext(keyInfo => messageLoop.Add(new KeyPressedMessage(keyInfo.Key)));
+using var keyPressedSubscription = keyPressedObservable.Subscribe(keyPressedObserver);
 
 messageLoop.OnMessage(messageReducer);
+
+static bool IsEscapeKeyMessage(AppMessage message)
+{
+    return message is KeyPressedMessage keyPressedMessage && keyPressedMessage.Key == ConsoleKey.Escape;
+}
