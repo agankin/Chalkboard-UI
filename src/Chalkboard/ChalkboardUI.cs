@@ -3,7 +3,7 @@ using Chalkboard.Samples;
 
 public class ChalkboardUI<TStore> : IDisposable
 {
-    private readonly TaskHandlingLoop _messageLoop = new();
+    private readonly TaskHandlingLoop _taskLoop = new();
 
     private readonly Element<TStore> _root;
     private readonly IRenderer _renderer;
@@ -22,15 +22,15 @@ public class ChalkboardUI<TStore> : IDisposable
         Render();
     }
 
-    public Action<TMessage> AddMessage<TMessage>(StoreReducer<TStore, TMessage> storeReducer)
+    public ActionDispatcher<TMessage> AddStoreReducer<TMessage>(StoreReducer<TStore, TMessage> storeReducer)
     {
-        var messageReducer = _store.CreateReducer(storeReducer);
-        return message => _messageLoop.AddTask(() => messageReducer(message));
+        var actionDispatcher = _store.CreateReducer(storeReducer);
+        return action => _taskLoop.AddTask(() => actionDispatcher(action));
     }
 
-    public void EnterMessageLoop(CancellationToken cancellationToken = default)
+    public void EnterActionLoop(CancellationToken cancellationToken = default)
     {
-        _messageLoop.RunLoop(cancellationToken);
+        _taskLoop.RunLoop(cancellationToken);
     }
 
     private void Render()

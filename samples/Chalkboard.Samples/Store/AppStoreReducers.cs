@@ -14,7 +14,7 @@ public static class AppStoreReducers
         SnakeDirection.Right
     ];
 
-    public static AppStore OnTick(AppStore store, Nothing _)
+    public static AppStore OnTick(AppStore store, TimerEvent _)
     {
         var direction = store.Direction;
 

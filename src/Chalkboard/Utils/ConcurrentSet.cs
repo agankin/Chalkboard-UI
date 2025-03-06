@@ -18,4 +18,6 @@ internal class ConcurrentSet<TItem> : IEnumerable<TItem> where TItem : notnull
     public IEnumerator<TItem> GetEnumerator() => _dict.Keys.GetEnumerator();
 
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+    private readonly record struct Nothing();
 }

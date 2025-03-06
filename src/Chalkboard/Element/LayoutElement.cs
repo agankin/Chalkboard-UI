@@ -4,12 +4,11 @@ public abstract class LayoutElement<TStore> : Element<TStore>
 {
     protected LayoutElement()
     {
-        Children = new(this);
-
+        Children = new();
         AutoUpdateStoreUpdatable(() => Children);
     }
 
-    public ChildCollection<TStore> Children { get; }
+    public StoreUpdatableCollection<TStore, Element<TStore>> Children { get; }
 
     protected override void OnStoreUpdated()
     {

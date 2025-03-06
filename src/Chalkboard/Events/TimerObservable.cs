@@ -1,8 +1,8 @@
 namespace Chalkboard.Samples;
 
-public class TimerObservable : IObservable<Nothing>, IDisposable
+public class TimerObservable : IObservable<TimerEvent>, IDisposable
 {
-    private readonly RxSubscriptionSet<Nothing> _subscriptions = new();
+    private readonly RxSubscriptionSet<TimerEvent> _subscriptions = new();
     private readonly Timer _timer;
     
     private volatile int _disposed = 0;
@@ -24,7 +24,7 @@ public class TimerObservable : IObservable<Nothing>, IDisposable
         return instance;
     }
 
-    public IDisposable Subscribe(IObserver<Nothing> observer) => _subscriptions.Add(observer);
+    public IDisposable Subscribe(IObserver<TimerEvent> observer) => _subscriptions.Add(observer);
 
     public void Dispose()
     {

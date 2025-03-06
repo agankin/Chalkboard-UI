@@ -13,8 +13,6 @@ public abstract class Element<TStore> : IStoreUpdatable<TStore>
 
     public TStore Store { get; private set; } = default!;
 
-    public Element<TStore>? Parent { get; internal set; }
-
     public ComputedValue<TStore, Margin> Margin { get; } = new Margin(0, 0);
 
     public virtual void UpdateStore(TStore store)

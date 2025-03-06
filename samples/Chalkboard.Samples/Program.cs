@@ -20,17 +20,26 @@ var root = new Border { Content = new Field() };
 
 var ui = new ChalkboardUI<AppStore>(root, renderer, store);
 
-var tickReducer = ui.AddMessage<Nothing>(AppStoreReducers.OnTick);
-var keyPressedReducer = ui.AddMessage<ConsoleKeyInfo>(AppStoreReducers.OnKeyPressed);
+var tickDispatcher = ui.AddStoreReducer<TimerEvent>(AppStoreReducers.OnTick);
+var keyPressedDispatcher = ui.AddStoreReducer<ConsoleKeyInfo>(AppStoreReducers.OnKeyPressed);
 
 Console.CursorVisible = false;
 
 using var timerObservable = TimerObservable.Start(100);
-var timerObserver = new DispatchObserver<Nothing>().OnNext(tickReducer);
+var timerObserver = new DispatchObserver<TimerEvent>().OnNext(e => tickDispatcher(e));
 using var timerSubscription = timerObservable.Subscribe(timerObserver);
 
 using var keyPressedObservable = KeyPressedObservable.Start();
-var keyPressedObserver = new DispatchObserver<ConsoleKeyInfo>().OnNext(keyPressedReducer);
+var keyPressedObserver = new DispatchObserver<ConsoleKeyInfo>().OnNext(e => keyPressedDispatcher(e));
 using var keyPressedSubscription = keyPressedObservable.Subscribe(keyPressedObserver);
 
-ui.EnterMessageLoop();
+var cts = new CancellationTokenSource();
+var exitObserver = new DispatchObserver<ConsoleKeyInfo>()
+    .OnNext(keyInfo =>
+    {
+        if (keyInfo.Key == ConsoleKey.Escape)
+            cts.Cancel();
+    });
+using var exitSubscription = keyPressedObservable.Subscribe(exitObserver);
+
+ui.EnterActionLoop(cts.Token);

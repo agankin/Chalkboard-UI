@@ -12,11 +12,11 @@ public class Store<TStore>
 
     public TStore Value { get; private set; }
 
-    public Action<TArg> CreateReducer<TArg>(StoreReducer<TStore, TArg> reducer)
+    public ActionDispatcher<TAction> CreateReducer<TAction>(StoreReducer<TStore, TAction> reducer)
     {
-        return arg =>
+        return action =>
         {
-            Value = reducer(Value, arg);
+            Value = reducer(Value, action);
             _onUpdated();
         };
     }
