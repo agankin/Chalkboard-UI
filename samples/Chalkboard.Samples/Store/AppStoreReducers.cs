@@ -14,22 +14,7 @@ public static class AppStoreReducers
         SnakeDirection.Right
     ];
 
-    public static AppStore OnMessage(AppStore store, AppMessage message)
-    {
-        switch (message)
-        {
-            case TickMessage _:
-                return OnTick(store);
-
-            case KeyPressedMessage keyPressedMessage:
-                return OnKeyPressed(store, keyPressedMessage.Key);
-
-            default:
-                return store;
-        }
-    }
-
-    private static AppStore OnTick(AppStore store)
+    public static AppStore OnTick(AppStore store, Nothing _)
     {
         var direction = store.Direction;
 
@@ -40,9 +25,9 @@ public static class AppStoreReducers
         return MoveChangingDirection(store);
     }
 
-    private static AppStore OnKeyPressed(AppStore store, ConsoleKey key)
+    public static AppStore OnKeyPressed(AppStore store, ConsoleKeyInfo keyInfo)
     {
-        switch (key)
+        switch (keyInfo.Key)
         {
             case ConsoleKey.UpArrow:
                 return UpdateDirection(store, SnakeDirection.Up);

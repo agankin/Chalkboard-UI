@@ -19,26 +19,18 @@ var store = new AppStore
 var root = new Border { Content = new Field() };
 
 var ui = new ChalkboardUI<AppStore>(root, renderer, store);
-var messageReducer = ui.AddStoreReducer<AppMessage>(AppStoreReducers.OnMessage);
+
+var tickReducer = ui.AddMessage<Nothing>(AppStoreReducers.OnTick);
+var keyPressedReducer = ui.AddMessage<ConsoleKeyInfo>(AppStoreReducers.OnKeyPressed);
 
 Console.CursorVisible = false;
-ui.Render();
-
-var messageLoop = new MessageLoop<AppMessage>(IsEscapeKeyMessage);
 
 using var timerObservable = TimerObservable.Start(100);
-var timerObserver = new DispatchObserver<Nothing>()
-    .OnNext(_ => messageLoop.Add(new TickMessage()));
+var timerObserver = new DispatchObserver<Nothing>().OnNext(tickReducer);
 using var timerSubscription = timerObservable.Subscribe(timerObserver);
 
 using var keyPressedObservable = KeyPressedObservable.Start();
-var keyPressedObserver = new DispatchObserver<ConsoleKeyInfo>()
-    .OnNext(keyInfo => messageLoop.Add(new KeyPressedMessage(keyInfo.Key)));
+var keyPressedObserver = new DispatchObserver<ConsoleKeyInfo>().OnNext(keyPressedReducer);
 using var keyPressedSubscription = keyPressedObservable.Subscribe(keyPressedObserver);
 
-messageLoop.OnMessage(messageReducer);
-
-static bool IsEscapeKeyMessage(AppMessage message)
-{
-    return message is KeyPressedMessage keyPressedMessage && keyPressedMessage.Key == ConsoleKey.Escape;
-}
+ui.EnterMessageLoop();
