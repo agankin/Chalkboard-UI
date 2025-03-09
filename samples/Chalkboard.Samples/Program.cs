@@ -1,6 +1,8 @@
 ﻿using Chalkboard;
 using Chalkboard.Samples;
 
+using static Chalkboard.UITreeHelper<Chalkboard.Samples.AppStore>;
+
 ColorScheme.SetDefault(Color.White, Color.Black);
 
 var (width, height) = (Console.WindowWidth, Console.WindowHeight);
@@ -16,7 +18,9 @@ var store = new AppStore
     Direction = SnakeDirection.Up
 };
 
-var root = new Border { Content = new Field() };
+var root = _<Border>(
+    _<Field>()
+);
 
 var ui = new ChalkboardUI<AppStore>(root, renderer, store);
 
