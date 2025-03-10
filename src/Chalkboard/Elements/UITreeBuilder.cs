@@ -1,6 +1,6 @@
 namespace Chalkboard;
 
-public static class UITreeHelper<TStore>
+public static class UITreeBuilder<TStore>
 {
     public static TElement _<TElement>() where TElement : Element<TStore>, new()
     {
