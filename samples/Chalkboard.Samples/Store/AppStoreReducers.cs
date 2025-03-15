@@ -2,7 +2,7 @@ using System.Collections.Immutable;
 
 namespace Chalkboard.Samples;
 
-using static SnakeModelTransformers;
+using static SnakeTransformer;
 
 public static class AppStoreReducers
 {
@@ -18,7 +18,7 @@ public static class AppStoreReducers
     {
         var direction = store.Direction;
 
-        var snake = GetMoveTransformer(direction).Invoke(store.Snake);
+        var snake = CreateMoveTransformer(direction).Invoke(store.Snake);
         if (IsValid(snake, store.FieldSize))
             return store with { Snake = snake };
 
@@ -58,7 +58,7 @@ public static class AppStoreReducers
             return store;
         
         var selectedDirection = SelectRandomly(triedDirections);
-        var snake = GetMoveTransformer(selectedDirection).Invoke(store.Snake);
+        var snake = CreateMoveTransformer(selectedDirection).Invoke(store.Snake);
         
         if (IsValid(snake, store.FieldSize))
             return store with { Snake = snake, Direction = selectedDirection };

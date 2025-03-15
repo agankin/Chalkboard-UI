@@ -1,7 +1,7 @@
 ﻿using Chalkboard;
 using Chalkboard.Samples;
 
-using static Chalkboard.UITreeHelper<Chalkboard.Samples.AppStore>;
+using static Chalkboard.UITreeBuilder<Chalkboard.Samples.AppStore>;
 
 ColorScheme.SetDefault(Color.White, Color.Black);
 
@@ -11,15 +11,23 @@ var renderer = new WindowsConsoleRenderer(width, height);
 var (fieldWidth, fieldHeight) = (width - 2, height - 2);
 var (headLeft, headTop) = (fieldWidth / 2, fieldHeight / 2);
 
+var fieldSize = new Size(fieldWidth, fieldHeight);
+var snakeModel = new SnakeModel(new(headLeft, headTop), p => p.TranslateTop(1), 5);
+
 var store = new AppStore
 {
-    FieldSize = new(fieldWidth, fieldHeight),
-    Snake = new SnakeModel(new(headLeft, headTop), p => p.TranslateTop(1), 5),
-    Direction = SnakeDirection.Up
+    FieldSize = fieldSize,
+    Snake = snakeModel,
+    Direction = SnakeDirection.Up,
+    Obstacles = ObstaclesGenerator.Generate(fieldSize, snakeModel, 20),
+    Collided = false
 };
 
 var root = _<Border>(
-    _<Field>()
+    _<Field>(
+        _<Snake>(),
+        _<ObstacleMap>()
+    )
 );
 
 var ui = new ChalkboardUI<AppStore>(root, renderer, store);
@@ -29,7 +37,7 @@ var keyPressedDispatcher = ui.AddStoreReducer<ConsoleKeyInfo>(AppStoreReducers.O
 
 Console.CursorVisible = false;
 
-using var timerObservable = TimerObservable.Start(100);
+using var timerObservable = TimerObservable.Start(tickMilliseconds: 100, dueTimeMilliseconds: 1000);
 var timerObserver = new DispatchObserver<TimerEvent>().OnNext(e => tickDispatcher(e));
 using var timerSubscription = timerObservable.Subscribe(timerObserver);
 

@@ -10,10 +10,13 @@ public abstract class Element<TStore> : IStoreUpdatable<TStore>
 
     public TStore Store { get; private set; } = default!;
 
-    public ComputedValue<TStore, Margin> Margin { get; } = new Margin(0, 0);
+    public ComputedValue<TStore, Margin> Margin { get; set; } = new Margin(0, 0);
 
     public virtual void UpdateStore(TStore store)
     {
+        if (EqualityComparer<TStore>.Default.Equals(Store, store))
+            return;
+
         Store = store;
 
         OnStoreUpdated();

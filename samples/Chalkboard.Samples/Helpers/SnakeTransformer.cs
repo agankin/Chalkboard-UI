@@ -1,8 +1,8 @@
 namespace Chalkboard.Samples;
 
-public static class SnakeModelTransformers
+public static class SnakeTransformer
 {
-    public static Transformer<SnakeModel> GetMoveTransformer(SnakeDirection direction)
+    public static Transformer<SnakeModel> CreateMoveTransformer(SnakeDirection direction)
     {
         return direction switch
         {
